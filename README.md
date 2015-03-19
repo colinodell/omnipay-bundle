@@ -5,7 +5,7 @@
 [![Build Status](https://img.shields.io/travis/colinodell/omnipay-bundle/master.svg?style=flat-square)](https://travis-ci.org/colinodell/omnipay-bundle)
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/colinodell/omnipay-bundle.svg?style=flat-square)](https://scrutinizer-ci.com/g/colinodell/omnipay-bundle/code-structure)
 [![Quality Score](https://img.shields.io/scrutinizer/g/colinodell/omnipay-bundle.svg?style=flat-square)](https://scrutinizer-ci.com/g/colinodell/omnipay-bundle)
-[![Total Downloads](https://img.shields.io/packagist/dt/league/omnipay-bundle.svg?style=flat-square)](https://packagist.org/packages/league/omnipay-bundle)
+[![Total Downloads](https://img.shields.io/packagist/dt/colinodell/omnipay-bundle.svg?style=flat-square)](https://packagist.org/packages/colinodell/omnipay-bundle)
 
 Simple bundle for implementing [Omnipay](http://omnipay.thephpleague.com/) in your Symfony application.
 
