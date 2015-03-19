@@ -1,0 +1,9 @@
+services:
+    omnipay:
+        class: ColinODell\OmnipayBundle\Service\Omnipay
+        arguments:
+            - "@omnipay.factory"
+
+    omnipay.factory:
+        class: Omnipay\Common\GatewayFactory
+        public: false
