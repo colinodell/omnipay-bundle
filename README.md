@@ -54,7 +54,7 @@ The method names should be whatever you'd typically pass into `Omnipay::create()
 This bundle provides a new service called `Omnipay`.  It contains a single method `get()`, which returns a fully-configured gateway for you to use:
 
 ``` php
-$stripe = $this->get('omnipay')->get('Stripe);
+$stripe = $this->get('omnipay')->get('Stripe');
 
 $paypal = $this->get('omnipay')->get('PayPal_Express');
 ```
