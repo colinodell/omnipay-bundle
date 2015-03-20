@@ -17,6 +17,20 @@ Via Composer
 $ composer require colinodell/omnipay-bundle
 ```
 
+## Usage
+
+This bundle provides a new service called `Omnipay`.  It contains a single method `get()`, which returns a fully-configured gateway for you to use:
+
+``` php
+$stripe = $this->get('omnipay')->get('Stripe');
+
+$paypal = $this->get('omnipay')->get('PayPal_Express');
+```
+
+You can then use these gateways like usual.
+
+**Note:** Gateways are "cached" - calling `get('Some_Gateway')` multiple times will always return the same object.
+
 ## Configuration
 
 Gateways can be configured in your `app/config/config.yml` file
@@ -49,19 +63,6 @@ omnipay:
 The method names should be whatever you'd typically pass into `Omnipay::create()`.  The configuration settings vary per gateway - see
 [Configuring Gateways](http://omnipay.thephpleague.com/gateways/configuring/) in the Omnipay documentation for more details.
 
-## Usage
-
-This bundle provides a new service called `Omnipay`.  It contains a single method `get()`, which returns a fully-configured gateway for you to use:
-
-``` php
-$stripe = $this->get('omnipay')->get('Stripe');
-
-$paypal = $this->get('omnipay')->get('PayPal_Express');
-```
-
-You can then use these gateways like usual.
-
-**Note:** Gateways are "cached" - calling `get('Some_Gateway')` multiple times will always return the same object.
 
 ## Testing
 
