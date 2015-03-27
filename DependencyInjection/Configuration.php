@@ -36,6 +36,18 @@ class Configuration implements ConfigurationInterface
                     ->prototype('variable')
                     ->end()
                 ->end()
+                ->arrayNode('logging')
+                    ->addDefaultsIfNotSet()
+                    ->treatTrueLike(['enabled' => true, 'channel' => 'omnipay'])
+                    ->children()
+                        ->booleanNode('enabled')
+                            ->defaultFalse()
+                        ->end()
+                        ->scalarNode('channel')
+                            ->defaultValue('omnipay')
+                        ->end()
+                    ->end()
+                ->end()
             ->end();
 
         return $treeBuilder;

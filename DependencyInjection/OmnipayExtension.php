@@ -13,6 +13,7 @@ namespace ColinODell\OmnipayBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
@@ -37,5 +38,13 @@ class OmnipayExtension extends Extension
         // Add configuration to the Omnipay service
         $omnipay = $container->getDefinition('omnipay');
         $omnipay->addArgument($config['methods']);
+
+        // Configure logging
+        if ($config['logging']['enabled'] === true) {
+            $omnipay->addMethodCall('setLogger', [new Reference('logger')]);
+
+            $channel = $config['logging']['channel'];
+            $omnipay->addTag('monolog.logger', ['channel' => $channel]);
+        }
     }
 }

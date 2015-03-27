@@ -1,0 +1,4 @@
+omnipay:
+    logging:
+        enabled: true
+        channel: testchannel

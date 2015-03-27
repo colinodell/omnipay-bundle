@@ -65,6 +65,22 @@ class OmnipayTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($gateway1 === $gateway2);
     }
 
+
+    public function testLogger()
+    {
+        $mockClient = $this->getMock('Guzzle\Http\Client');
+        $mockClient->expects($this->once())
+            ->method('addSubscriber');
+
+        $omnipay = $this->createFakeOmnipay();
+        $omnipay->setFakeClient($mockClient);
+
+        $mockLogger = $this->getMock('Psr\Log\LoggerInterface');
+        $omnipay->setLogger($mockLogger);
+
+        $omnipay->get('PayPal_Pro');
+    }
+
     /**
      * @param array $config
      *
@@ -75,5 +91,17 @@ class OmnipayTest extends \PHPUnit_Framework_TestCase
         $factory = new GatewayFactory();
 
         return new Omnipay($factory, $config);
+    }
+
+    /**
+     * @param array $config
+     *
+     * @return FakeOmnipay
+     */
+    protected function createFakeOmnipay(array $config = [])
+    {
+        $factory = new GatewayFactory();
+
+        return new FakeOmnipay($factory, $config);
     }
 }
