@@ -12,8 +12,13 @@
 namespace ColinODell\OmnipayBundle\Service;
 
 use Guzzle\Http\Client;
+use Guzzle\Log\MessageFormatter;
+use Guzzle\Log\PsrLogAdapter;
+use Guzzle\Plugin\Log\LogPlugin;
+use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\GatewayFactory;
 use Omnipay\Common\GatewayInterface;
+use Psr\Log\LoggerInterface;
 
 class Omnipay
 {
@@ -26,6 +31,11 @@ class Omnipay
      * @var array
      */
     protected $config;
+
+    /**
+     * @var LoggerInterface|null
+     */
+    protected $logger;
 
     /**
      * @var GatewayInterface[]
@@ -43,9 +53,17 @@ class Omnipay
     }
 
     /**
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
      * @param string $gatewayName
      *
-     * @return GatewayInterface
+     * @return GatewayInterface|AbstractGateway
      */
     public function get($gatewayName)
     {
@@ -59,7 +77,13 @@ class Omnipay
 
     protected function createGateway($gatewayName)
     {
-        $httpClient = new Client();
+        $httpClient = $this->createClient();
+
+        if ($this->logger !== null) {
+            $adapter = new PsrLogAdapter($this->logger);
+            $plugin = new LogPlugin($adapter, MessageFormatter::DEBUG_FORMAT);
+            $httpClient->addSubscriber($plugin);
+        }
 
         /** @var GatewayInterface $gateway */
         $gateway = $this->gatewayFactory->create($gatewayName, $httpClient);
@@ -69,5 +93,13 @@ class Omnipay
         $gateway->initialize($config);
 
         return $gateway;
+    }
+
+    /**
+     * @return Client
+     */
+    protected function createClient()
+    {
+        return new Client();
     }
 }

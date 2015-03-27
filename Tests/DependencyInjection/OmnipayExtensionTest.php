@@ -13,6 +13,7 @@ namespace ColinODell\OmnipayBundle\Tests\DependencyInjection;
 
 use ColinODell\OmnipayBundle\DependencyInjection\OmnipayExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 abstract class OmnipayExtensionTest extends \PHPUnit_Framework_TestCase
@@ -28,6 +29,9 @@ abstract class OmnipayExtensionTest extends \PHPUnit_Framework_TestCase
         $definition = $container->getDefinition('omnipay');
 
         $this->assertEquals('ColinODell\OmnipayBundle\Service\Omnipay', $definition->getClass());
+
+        $this->assertFalse($definition->hasMethodCall('setLogger'));
+        $this->assertFalse($definition->hasTag('monolog.logger'));
     }
 
     public function testConfiguredOmnipayService()
@@ -60,6 +64,32 @@ abstract class OmnipayExtensionTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
+    public function testLoggingSimple()
+    {
+        $container = $this->createContainerFromFile('loggingSimple');
+
+        $definition = $container->getDefinition('omnipay');
+
+        $this->assertTrue($definition->hasMethodCall('setLogger'));
+        $this->assertTrue($definition->hasTag('monolog.logger'));
+
+        $tag = $definition->getTag('monolog.logger');
+        $this->assertEquals(['channel' => 'omnipay'], $tag[0]);
+    }
+
+    public function testLoggingFull()
+    {
+        $container = $this->createContainerFromFile('logging');
+
+        $definition = $container->getDefinition('omnipay');
+
+        $this->assertTrue($definition->hasMethodCall('setLogger'));
+        $this->assertTrue($definition->hasTag('monolog.logger'));
+
+        $tag = $definition->getTag('monolog.logger');
+        $this->assertEquals(['channel' => 'testchannel'], $tag[0]);
+    }
+
     /**
      * @return ContainerBuilder
      */
@@ -77,6 +107,9 @@ abstract class OmnipayExtensionTest extends \PHPUnit_Framework_TestCase
             'kernel.name'        => 'kernel',
             'kernel.root_dir'    => __DIR__,
         ]));
+
+        $logger = new Definition('Psr\Log\LoggerInterface');
+        $container->setDefinition('logger', $logger);
 
         return $container;
     }

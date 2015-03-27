@@ -4,6 +4,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased]
 ### Added
+ - Ability to log requests and responses
 
 ## 0.1.0
 ### Added

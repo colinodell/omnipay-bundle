@@ -38,6 +38,10 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     protected static function getSampleMethodConfig()
     {
         return [
+            'logging' => [
+                'enabled' => true,
+                'channel' => 'mychannel',
+            ],
             'methods' => [
                 'Stripe' => [
                     'apiKey' => 'sk_test_BQokikJOvBiI2HlWgH4olfQ2',
