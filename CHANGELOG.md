@@ -5,6 +5,8 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ## [Unreleased]
 ### Added
 
+ - Added the ability to register new gateways via the container
+
 ## 0.1.0
 ### Added
 

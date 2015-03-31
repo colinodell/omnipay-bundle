@@ -14,6 +14,7 @@ namespace ColinODell\OmnipayBundle\Service;
 use Guzzle\Http\Client;
 use Omnipay\Common\GatewayFactory;
 use Omnipay\Common\GatewayInterface;
+use Omnipay\Common\Helper;
 
 class Omnipay
 {
@@ -31,6 +32,11 @@ class Omnipay
      * @var GatewayInterface[]
      */
     protected $cache;
+
+    /**
+     * @var GatewayInterface[]
+     */
+    protected $registeredGateways = [];
 
     /**
      * @param GatewayFactory $gatewayFactory
@@ -57,12 +63,26 @@ class Omnipay
         return $this->cache[$gatewayName];
     }
 
+    /**
+     * @param GatewayInterface $gatewayInstance
+     * @param string|null      $alias
+     */
+    public function registerGateway(GatewayInterface $gatewayInstance, $alias = null)
+    {
+        $name = $alias ?: Helper::getGatewayShortName(get_class($gatewayInstance));
+        $this->registeredGateways[$name] = $gatewayInstance;
+    }
+
     protected function createGateway($gatewayName)
     {
         $httpClient = new Client();
 
-        /** @var GatewayInterface $gateway */
-        $gateway = $this->gatewayFactory->create($gatewayName, $httpClient);
+        if (isset($this->registeredGateways[$gatewayName])) {
+            $gateway = $this->registeredGateways[$gatewayName];
+        } else {
+            /** @var GatewayInterface $gateway */
+            $gateway = $this->gatewayFactory->create($gatewayName, $httpClient);
+        }
 
         $config = isset($this->config[$gatewayName]) ? $this->config[$gatewayName] : [];
 

@@ -11,8 +11,16 @@
 
 namespace ColinODell\OmnipayBundle;
 
+use ColinODell\OmnipayBundle\DependencyInjection\Compiler\GatewayTagCompilerPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class OmnipayBundle extends Bundle
 {
+    public function build(ContainerBuilder $container)
+    {
+        parent::build($container);
+
+        $container->addCompilerPass(new GatewayTagCompilerPass());
+    }
 }
