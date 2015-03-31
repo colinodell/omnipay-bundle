@@ -30,7 +30,24 @@ class GatewayTagCompilerPassTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(true, 'Just making sure nothing blew up');
     }
 
-    public function testProcess()
+    public function testProcessWithAlias()
+    {
+        $container = $this->createContainer(true, 'TestGateway');
+
+        $pass = new GatewayTagCompilerPass();
+        $pass->process($container);
+
+        $omnipayDefinition = $container->findDefinition('omnipay');
+
+        $methodCalls = $this->getMethodCallsByName($omnipayDefinition, 'registerGateway');
+        $this->assertCount(1, $methodCalls);
+
+        list($reference, $alias) = reset($methodCalls);
+        $this->assertReferenceEquals('test.gateway', $reference);
+        $this->assertEquals('TestGateway', $alias);
+    }
+
+    public function testProcessWithoutAlias()
     {
         $container = $this->createContainer(true);
 
@@ -47,11 +64,12 @@ class GatewayTagCompilerPassTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param bool $withOmnipay
+     * @param bool        $withOmnipay
+     * @param string|null $fakeGatewayAlias
      *
      * @return ContainerBuilder
      */
-    protected function createContainer($withOmnipay)
+    protected function createContainer($withOmnipay, $fakeGatewayAlias = null)
     {
         $container = new ContainerBuilder();
 
@@ -60,7 +78,11 @@ class GatewayTagCompilerPassTest extends \PHPUnit_Framework_TestCase
         }
 
         $gatewayDefinition = new Definition('My\Fake\Gateway');
-        $gatewayDefinition->addTag('omnipay.gateway');
+        if ($fakeGatewayAlias === null) {
+            $gatewayDefinition->addTag('omnipay.gateway');
+        } else {
+            $gatewayDefinition->addTag('omnipay.gateway', ['alias' => $fakeGatewayAlias]);
+        }
 
         $container->setDefinition('test.gateway', $gatewayDefinition);
 

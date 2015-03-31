@@ -68,11 +68,25 @@ The method names should be whatever you'd typically pass into `Omnipay::create()
 Custom gateways can be registered via the container by tagging them with `omnipay.gateway`:
 
 ```yml
+# services.yml
 services:
     my.test.gateway:
         class: Path\To\MyTestGateway
         tags:
-            - { name: omnipay.gateway }
+            - { name: omnipay.gateway, alias: MyTest }
+
+# config.yml
+omnipay:
+    methods:
+        # Reference the gateway alias here
+        MyTest:
+            apiKey: abcd1234!@#
+```
+
+You can then obtain the fully-configured gateway by its alias:
+
+```php
+$this->get('omnipay')->get('MyTest');
 ```
 
 ## Testing

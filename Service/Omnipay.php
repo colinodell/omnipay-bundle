@@ -65,10 +65,11 @@ class Omnipay
 
     /**
      * @param GatewayInterface $gatewayInstance
+     * @param string|null      $alias
      */
-    public function registerGateway(GatewayInterface $gatewayInstance)
+    public function registerGateway(GatewayInterface $gatewayInstance, $alias = null)
     {
-        $name = Helper::getGatewayShortName(get_class($gatewayInstance));
+        $name = $alias ?: Helper::getGatewayShortName(get_class($gatewayInstance));
         $this->registeredGateways[$name] = $gatewayInstance;
     }
 

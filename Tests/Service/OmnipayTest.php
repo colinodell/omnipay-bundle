@@ -78,6 +78,18 @@ class OmnipayTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($fakeGateway, $actual);
     }
 
+    public function testRegisterGatewayWithAlias()
+    {
+        $omnipay = $this->createOmnipay();
+
+        $fakeGateway = new FakeGateway();
+
+        $omnipay->registerGateway($fakeGateway, 'CompletelyMadeUpAlias');
+        $actual = $omnipay->get('CompletelyMadeUpAlias');
+
+        $this->assertSame($fakeGateway, $actual);
+    }
+
     /**
      * @param array $config
      *

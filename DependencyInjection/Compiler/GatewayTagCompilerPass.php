@@ -30,7 +30,16 @@ class GatewayTagCompilerPass implements CompilerPassInterface
 
         $taggedGateways = $container->findTaggedServiceIds('omnipay.gateway');
         foreach ($taggedGateways as $id => $tags) {
-            $definition->addMethodCall('registerGateway', [new Reference($id)]);
+            foreach ($tags as $tag) {
+                $args = [new Reference($id)];
+
+                // Reference the gateway by the alias if provided
+                if (isset($tag['alias'])) {
+                    $args[] = $tag['alias'];
+                }
+
+                $definition->addMethodCall('registerGateway', $args);
+            }
         }
     }
 }
