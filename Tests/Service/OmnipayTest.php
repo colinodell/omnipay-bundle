@@ -12,6 +12,7 @@
 namespace ColinODell\OmnipayBundle\Tests\Service;
 
 use ColinODell\OmnipayBundle\Service\Omnipay;
+use ColinODell\OmnipayBundle\Tests\FakeGateway;
 use Omnipay\Common\GatewayFactory;
 use Omnipay\PayPal\ProGateway;
 
@@ -63,6 +64,18 @@ class OmnipayTest extends \PHPUnit_Framework_TestCase
         $gateway2 = $omnipay->get('PayPal_Pro');
 
         $this->assertTrue($gateway1 === $gateway2);
+    }
+
+    public function testRegisterGateway()
+    {
+        $omnipay = $this->createOmnipay();
+
+        $fakeGateway = new FakeGateway();
+
+        $omnipay->registerGateway($fakeGateway);
+        $actual = $omnipay->get('\ColinODell\OmnipayBundle\Tests\FakeGateway');
+
+        $this->assertSame($fakeGateway, $actual);
     }
 
     /**

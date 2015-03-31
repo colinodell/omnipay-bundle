@@ -63,6 +63,17 @@ omnipay:
 The method names should be whatever you'd typically pass into `Omnipay::create()`.  The configuration settings vary per gateway - see
 [Configuring Gateways](http://omnipay.thephpleague.com/gateways/configuring/) in the Omnipay documentation for more details.
 
+## Registering Custom Gateways
+
+Custom gateways can be registered via the container by tagging them with `omnipay.gateway`:
+
+```yml
+services:
+    my.test.gateway:
+        class: Path\To\MyTestGateway
+        tags:
+            - { name: omnipay.gateway }
+```
 
 ## Testing
 
