@@ -17,6 +17,12 @@ Via Composer
 $ composer require colinodell/omnipay-bundle
 ```
 
+Enable the bundle in the kernel
+
+```php
+new ColinODell\OmnipayBundle\OmnipayBundle(),
+```
+
 ## Usage
 
 This bundle provides a new service called `Omnipay`.  It contains a single method `get()`, which returns a fully-configured gateway for you to use:
