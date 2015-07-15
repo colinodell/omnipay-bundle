@@ -17,7 +17,7 @@ Via Composer
 $ composer require colinodell/omnipay-bundle
 ```
 
-Enable the bundle in the kernel
+Enable the bundle in your `AppKernel.php`:
 
 ```php
 new ColinODell\OmnipayBundle\OmnipayBundle(),
