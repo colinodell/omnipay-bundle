@@ -176,10 +176,13 @@ abstract class OmnipayExtensionTest extends \PHPUnit_Framework_TestCase
     /**
      * @param Definition $definition
      * @param string $method
+     * @return mixed
      */
     private function getMethodCallArguments(Definition $definition, $method)
     {
-        foreach ($definition->getMethodCalls() as list($methodName, $arguments)) {
+        foreach ($definition->getMethodCalls() as $methodCall) {
+            list($methodName, $arguments) = $methodCall;
+
             if ($methodName === $method) {
                 return $arguments;
             }
