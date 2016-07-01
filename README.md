@@ -129,7 +129,7 @@ omnipay:
         MyGateway2:
             apiKey: abcd45678!@#
 
-    disabled_gateways: MyGateway1
+    disabled_gateways: [ MyGateway1 ]
 ```
 
 `MyGateway1` gateway will be skipped during gateway registration now.

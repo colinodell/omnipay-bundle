@@ -23,6 +23,6 @@ $container->loadFromExtension('omnipay', [
             'landingPage' => 'Login',
         ],
     ],
-    'disabled_gateways' => 'Stripe',
+    'disabled_gateways' => ['Stripe'],
     'default_gateway' => 'Stripe',
 ]);
