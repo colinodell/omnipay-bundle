@@ -29,14 +29,42 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     {
         $sampleConfig = self::getSampleMethodConfig();
 
-        $processor = new Processor();
-        $config = $processor->processConfiguration(new Configuration(), [$sampleConfig]);
-
-        $this->assertEquals($sampleConfig, $config);
+        $this->assertEquals($sampleConfig, $this->processConfiguration($sampleConfig));
     }
 
-    protected static function getSampleMethodConfig()
+    public function testMethodConfigWithDefaultGateway()
     {
+        $sampleConfig = self::getSampleMethodConfig('Stripe');
+
+        $this->assertEquals($sampleConfig, $this->processConfiguration($sampleConfig));
+    }
+
+    public function testMethodConfigWithDisabledGateways()
+    {
+        $sampleConfig = self::getSampleMethodConfig(null, ['Stripe']);
+
+        $this->assertEquals($sampleConfig, $this->processConfiguration($sampleConfig));
+    }
+
+    public function testMethodConfigWithDefaultGatewayAndDisabledGateways()
+    {
+        $sampleConfig = self::getSampleMethodConfig('PayPal_Express', ['Stripe']);
+
+        $this->assertEquals($sampleConfig, $this->processConfiguration($sampleConfig));
+    }
+
+    public function testMethodConfigWithInitializeOnRegistartion()
+    {
+        $sampleConfig = self::getSampleMethodConfig(null, [], true);
+
+        $this->assertEquals($sampleConfig, $this->processConfiguration($sampleConfig));
+    }
+
+    protected static function getSampleMethodConfig(
+        $defaultGateway = null,
+        $disabledGateways = [],
+        $initializeOnRegistration = false
+    ) {
         return [
             'methods' => [
                 'Stripe' => [
@@ -51,6 +79,16 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                     'landingPage' => 'Login',
                 ],
             ],
+            'default_gateway' => $defaultGateway,
+            'disabled_gateways' => $disabledGateways,
+            'initialize_gateway_on_registration' => $initializeOnRegistration,
         ];
+    }
+
+    private function processConfiguration(array $sampleConfig)
+    {
+        $processor = new Processor();
+
+        return $processor->processConfiguration(new Configuration(), [$sampleConfig]);
     }
 }

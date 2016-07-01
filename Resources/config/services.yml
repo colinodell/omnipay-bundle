@@ -1,6 +1,9 @@
+parameters:
+    omnipay.class: ColinODell\OmnipayBundle\Service\Omnipay
+
 services:
     omnipay:
-        class: ColinODell\OmnipayBundle\Service\Omnipay
+        class: %omnipay.class%
         arguments:
             - "@omnipay.factory"
 

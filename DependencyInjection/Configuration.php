@@ -36,6 +36,15 @@ class Configuration implements ConfigurationInterface
                     ->prototype('variable')
                     ->end()
                 ->end()
+                ->scalarNode('default_gateway')
+                    ->defaultNull()
+                ->end()
+                ->booleanNode('initialize_gateway_on_registration')
+                    ->defaultFalse()
+                ->end()
+                ->arrayNode('disabled_gateways')
+                    ->prototype('scalar')
+                ->end()
             ->end();
 
         return $treeBuilder;
