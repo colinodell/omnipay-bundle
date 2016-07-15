@@ -46,6 +46,38 @@ class OmnipayTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($config, $gateway->getParameters());
     }
 
+    public function testGetDefaultGateway()
+    {
+        $omnipay = $this->createOmnipay();
+        $omnipay->setDefaultGatewayName('PayPal_Pro');
+
+        $gateway = $omnipay->getDefaultGateway();
+
+        $this->assertTrue($gateway instanceof ProGateway);
+        $this->assertEquals($gateway->getDefaultParameters(), $gateway->getParameters());
+    }
+
+    /**
+     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     */
+    public function testGetNonConfiguredDefaultGateway()
+    {
+        $omnipay = $this->createOmnipay();
+        $omnipay->getDefaultGateway();
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testGetDisabledGateway()
+    {
+        $omnipay = $this->createOmnipay();
+        $omnipay->setDisabledGateways(['fake']);
+        $omnipay->registerGateway(new FakeGateway(), 'fake');
+
+        $omnipay->get('fake');
+    }
+
     /**
      * @expectedException \RuntimeException
      */

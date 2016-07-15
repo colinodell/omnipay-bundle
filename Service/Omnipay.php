@@ -15,6 +15,7 @@ use Guzzle\Http\Client;
 use Omnipay\Common\GatewayFactory;
 use Omnipay\Common\GatewayInterface;
 use Omnipay\Common\Helper;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
 class Omnipay
 {
@@ -37,6 +38,21 @@ class Omnipay
      * @var GatewayInterface[]
      */
     protected $registeredGateways = [];
+
+    /**
+     * @var string[]
+     */
+    protected $disabledGateways = [];
+
+    /**
+     * @var string
+     */
+    protected $defaultGatewayName;
+
+    /**
+     * @var bool
+     */
+    protected $initializeOnRegistration = false;
 
     /**
      * @param GatewayFactory $gatewayFactory
@@ -70,9 +86,59 @@ class Omnipay
     public function registerGateway(GatewayInterface $gatewayInstance, $alias = null)
     {
         $name = $alias ?: Helper::getGatewayShortName(get_class($gatewayInstance));
+
+        if (in_array($name, $this->disabledGateways)) {
+            return;
+        }
+
         $this->registeredGateways[$name] = $gatewayInstance;
+
+        if ($this->initializeOnRegistration) {
+            $gatewayInstance->initialize($this->getGatewayConfig($name));
+            $this->cache[$name] = $gatewayInstance;
+        }
     }
 
+    /**
+     * @param string[] $disabledGateways
+     */
+    public function setDisabledGateways(array $disabledGateways)
+    {
+        $this->disabledGateways = $disabledGateways;
+    }
+
+    /**
+     * @return GatewayInterface
+     */
+    public function getDefaultGateway()
+    {
+        if (null === $this->defaultGatewayName) {
+            throw new InvalidConfigurationException('Default gateway is not configured');
+        }
+
+        return $this->get($this->defaultGatewayName);
+    }
+
+    /**
+     * @param string $defaultGatewayName
+     */
+    public function setDefaultGatewayName($defaultGatewayName)
+    {
+        $this->defaultGatewayName = $defaultGatewayName;
+    }
+
+    /**
+     * @param boolean $initializeOnRegistration
+     */
+    public function initializeOnRegistration($initializeOnRegistration)
+    {
+        $this->initializeOnRegistration = $initializeOnRegistration;
+    }
+
+    /**
+     * @param string $gatewayName
+     * @return GatewayInterface
+     */
     protected function createGateway($gatewayName)
     {
         $httpClient = new Client();
@@ -84,10 +150,17 @@ class Omnipay
             $gateway = $this->gatewayFactory->create($gatewayName, $httpClient);
         }
 
-        $config = isset($this->config[$gatewayName]) ? $this->config[$gatewayName] : [];
-
-        $gateway->initialize($config);
+        $gateway->initialize($this->getGatewayConfig($gatewayName));
 
         return $gateway;
+    }
+
+    /**
+     * @param string $gatewayName
+     * @return array
+     */
+    protected function getGatewayConfig($gatewayName)
+    {
+        return isset($this->config[$gatewayName]) ? $this->config[$gatewayName] : [];
     }
 }

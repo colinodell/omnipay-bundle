@@ -95,6 +95,105 @@ You can then obtain the fully-configured gateway by its alias:
 $this->get('omnipay')->get('MyTest');
 ```
 
+## Additional configuration and customization
+
+### Default gateway
+
+Add default gateway key to your config:
+```yml
+# config.yml
+omnipay:
+    methods:
+        MyGateway1:
+            apiKey: abcd1234!@#
+        MyGateway2:
+            apiKey: abcd45678!@#
+
+    default_gateway: MyGateway1
+```
+
+You can now get default gateway instance:
+```php
+$omnipay->getDefaultGateway();
+```
+
+### Disabling gateways
+
+If need to disable a gateway but want to keep all the configuration add `disabled_gateways` key to the config:
+```yml
+# config.yml
+omnipay:
+    methods:
+        MyGateway1:
+            apiKey: abcd1234!@#
+        MyGateway2:
+            apiKey: abcd45678!@#
+
+    disabled_gateways: [ MyGateway1 ]
+```
+
+`MyGateway1` gateway will be skipped during gateway registration now.
+
+### Customizing Omnipay service
+
+If you need specific gateway selection mechanism or need to get multiple gateways at once consider to extend
+default Omnipay service. Create your custom Omnipay class, extend it from base class and add custom getters. For
+example, you might want to get all gateways which implement some interface.
+
+```php
+<?php
+
+// AppBundle/Omnipay/Omnipay.php
+
+namespace AppBundle\Omnipay;
+
+use AppBundle\Payment\Processing\Gateway\VaultAwareGateway;
+use ColinODell\OmnipayBundle\Service\Omnipay as BaseOmnipay;
+use Omnipay\Common\GatewayInterface;
+
+class Omnipay extends BaseOmnipay
+{
+    /**
+     * @return VaultAwareGateway[]
+     */
+    public function getVaultAwareGateways()
+    {
+        return array_filter($this->registeredGateways, function (GatewayInterface $gateway) {
+            return $gateway instanceof VaultAwareGateway;
+        });
+    }
+}
+```
+
+```yml
+#services.yml
+parameters:
+    omnipay.class: AppBundle\Omnipay\Omnipay
+```
+
+Now you should be able to get vault-aware gateways in your application:
+```php
+foreach ($omnipay->getVaultAwareGateways() as $gateway) {
+    $gateway->saveCreditCard($creditCard); // assuming saveCreditCard is a part of VaultAwareGateway interface
+}
+
+```
+
+### Initialize gateways on registration
+
+By default gateway is initialized only when you call `get()` method. If you use custom getters (like
+`getVaultAwareGateways` from example above) with `$this->registeredGateways` inside you might want to initialize them
+automatically during registration. Simply add appropriate config key:
+```yml
+# config.yml
+omnipay:
+    methods:
+        MyGateway1:
+            apiKey: abcd1234!@#
+
+    initialize_gateway_on_registration: true
+```
+
 ## Testing
 
 ``` bash

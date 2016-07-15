@@ -13,6 +13,7 @@ namespace ColinODell\OmnipayBundle\Tests\DependencyInjection;
 
 use ColinODell\OmnipayBundle\DependencyInjection\OmnipayExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 abstract class OmnipayExtensionTest extends \PHPUnit_Framework_TestCase
@@ -34,13 +35,51 @@ abstract class OmnipayExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this->createContainerFromFile('methods');
 
-        $this->assertTrue($container->hasDefinition('omnipay'));
+        $this->assertValidContainer($container);
+    }
 
-        $definition = $container->getDefinition('omnipay');
+    public function testConfiguredOmnipayWithDefaultService()
+    {
+        $container = $this->createContainerFromFile('methods-with-default-gateway');
 
-        $this->assertEquals('ColinODell\OmnipayBundle\Service\Omnipay', $definition->getClass());
-        $this->assertEquals('Omnipay\Common\GatewayFactory', $definition->getArgument(0)->getClass());
-        $this->assertEquals(self::getSampleMethodConfig(), $definition->getArgument(1));
+        $this->assertValidContainer($container, 'Stripe');
+    }
+
+    public function testConfiguredOmnipayWithDisabledGateways()
+    {
+        $container = $this->createContainerFromFile('methods-with-disabled-gateways');
+
+        $this->assertValidContainer($container, null, ['Stripe']);
+    }
+
+    public function testConfiguredOmnipayWithDefaultGatewayAdnDisabledGateways()
+    {
+        $container = $this->createContainerFromFile('methods-with-default-gateway-and-disabled-gateways');
+
+        $this->assertValidContainer($container, 'Stripe', ['PayPal_Express']);
+    }
+
+    public function testConfiguredOmnipayServiceWithInitializeOnRegistration()
+    {
+        $container = $this->createContainerFromFile('methods-with-initialize-on-registration');
+
+        $this->assertValidContainer($container);
+    }
+
+    /**
+     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     */
+    public function testOmnipayServiceWithNonExistingDefaultGateway()
+    {
+        $this->createContainerFromFile('non-existing-default-gateway');
+    }
+
+    /**
+     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     */
+    public function testOmnipayServiceWithDisabledDefaultGateway()
+    {
+        $this->createContainerFromFile('disabled-default-gateway');
     }
 
     protected static function getSampleMethodConfig()
@@ -96,5 +135,59 @@ abstract class OmnipayExtensionTest extends \PHPUnit_Framework_TestCase
         $container->compile();
 
         return $container;
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param string|null $defaultGateway
+     * @param array $disabledGateways
+     * @param null $initializeOnRegistration
+     */
+    private function assertValidContainer(
+        ContainerBuilder $container,
+        $defaultGateway = null,
+        $disabledGateways = [],
+        $initializeOnRegistration = null
+    ) {
+        $this->assertTrue($container->hasDefinition('omnipay'));
+
+        $definition = $container->getDefinition('omnipay');
+
+        $this->assertEquals('ColinODell\OmnipayBundle\Service\Omnipay', $definition->getClass());
+        $this->assertEquals('Omnipay\Common\GatewayFactory', $definition->getArgument(0)->getClass());
+        $this->assertEquals(self::getSampleMethodConfig(), $definition->getArgument(1));
+
+        if ($defaultGateway) {
+            $this->assertEquals([$defaultGateway], $this->getMethodCallArguments($definition, 'setDefaultGatewayName'));
+        }
+
+        if ($disabledGateways) {
+            $this->assertEquals([$disabledGateways], $this->getMethodCallArguments($definition, 'setDisabledGateways'));
+        }
+
+        if ($initializeOnRegistration) {
+            $this->assertEquals(
+                $initializeOnRegistration,
+                $this->getMethodCallArguments($definition, 'initializeOnRegistration')
+            );
+        }
+    }
+
+    /**
+     * @param Definition $definition
+     * @param string $method
+     * @return mixed
+     */
+    private function getMethodCallArguments(Definition $definition, $method)
+    {
+        foreach ($definition->getMethodCalls() as $methodCall) {
+            list($methodName, $arguments) = $methodCall;
+
+            if ($methodName === $method) {
+                return $arguments;
+            }
+        }
+
+        $this->assertTrue(false, sprintf('Method call %s has not been added to the definition', $method));
     }
 }
