@@ -18,7 +18,7 @@
         "symfony/framework-bundle": "~2.3"
     },
     "require-dev": {
-        "omnipay/omnipay": "~2.0",
+        "omnipay/paypal": "~2.0",
         "phpunit/phpunit": "~3.7"
     },
     "autoload": {
