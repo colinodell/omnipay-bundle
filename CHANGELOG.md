@@ -4,6 +4,10 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased]
 
+## [0.3.1]
+### Added
+ - Added support for Symfony 3 (#7)
+
 ## [0.3.0]
 ### Added
 
@@ -21,6 +25,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
  - Initial release
 
-[Unreleased]: https://github.com/colinodell/omnipay-bundle/compare/0.3.0...HEAD
+[Unreleased]: https://github.com/colinodell/omnipay-bundle/compare/0.3.1...HEAD
+[0.3.1]: https://github.com/colinodell/omnipay-bundle/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/colinodell/omnipay-bundle/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/colinodell/omnipay-bundle/compare/0.1.0...0.2.0
