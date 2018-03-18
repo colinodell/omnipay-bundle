@@ -5,8 +5,9 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ## [Unreleased]
 
 ## [1.0.0]
-
-Released 0.3.1 as a new major version - no new changes.
+### Changed
+ - Added support for PHP 7.2
+ - Removed support for HHVM
 
 ## [0.3.1]
 ### Added
