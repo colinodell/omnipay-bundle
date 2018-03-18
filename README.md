@@ -9,6 +9,8 @@
 
 Simple bundle for implementing [Omnipay](http://omnipay.thephpleague.com/) in your Symfony application.
 
+omnipay-bundle version 1.x supports both Symfony 2.x and 3.x.
+
 ## Install
 
 Via Composer
