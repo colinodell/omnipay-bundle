@@ -11,7 +11,7 @@
 
 namespace ColinODell\OmnipayBundle\Service;
 
-use Guzzle\Http\Client;
+use Omnipay\Common\Http\Client;
 use Omnipay\Common\GatewayFactory;
 use Omnipay\Common\GatewayInterface;
 use Omnipay\Common\Helper;
