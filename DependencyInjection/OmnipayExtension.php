@@ -40,6 +40,7 @@ class OmnipayExtension extends Extension
 
         // Add configuration to the Omnipay service
         $omnipay = $container->getDefinition('omnipay');
+        $omnipay->setPublic(true);
         $omnipay->addArgument($methods);
 
         if ($disabledGateways = $config['disabled_gateways']) {

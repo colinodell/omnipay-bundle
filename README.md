@@ -9,7 +9,12 @@
 
 Simple bundle for implementing [Omnipay](http://omnipay.thephpleague.com/) in your Symfony application.
 
-omnipay-bundle version 1.x supports both Symfony 2.x and 3.x.
+## Versions
+
+| omnipay-bundle  | Symfony    | Omnipay | PHP  |
+|-----------------|------------|---------|------|
+| **1.x**         | 2.x or 3.x | **2.x** | 5.4+ |
+| **2.x**         | 2.x or 3.x | **3.x** | 5.6+ |
 
 ## Install
 
