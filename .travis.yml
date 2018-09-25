@@ -19,7 +19,7 @@ matrix:
 sudo: false
 
 install:
-  - composer install --no-interaction --prefer-source --dev $COMPOSER_FLAGS
+  - COMPOSER_MEMORY_LIMIT=-1 composer install --no-interaction --prefer-dist $COMPOSER_FLAGS
   - if [ "$DEPENDENCIES" != "" ]; then composer require --no-update $DEPENDENCIES; fi;
 
 script:
