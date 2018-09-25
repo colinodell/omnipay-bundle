@@ -4,6 +4,12 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased]
 
+## [2.0.0]
+### Changed
+ - Support Omnipay 3 instead of Omnipay 2
+ - Minimum PHP version is now 5.6
+ - `omnipay` service is public by default
+
 ## [1.0.0]
 ### Changed
  - Added support for PHP 7.2
@@ -30,8 +36,9 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
  - Initial release
 
-[Unreleased]: https://github.com/colinodell/omnipay-bundle/compare/1.0.0...HEAD
-[1.0.0]: https://github.com/colinodell/omnipay-bundle/compare/0.3.1...1.0.0
+[Unreleased]: https://github.com/colinodell/omnipay-bundle/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/colinodell/omnipay-bundle/compare/v1.0.0...v2.0.0
+[1.0.0]: https://github.com/colinodell/omnipay-bundle/compare/0.3.1...v1.0.0
 [0.3.1]: https://github.com/colinodell/omnipay-bundle/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/colinodell/omnipay-bundle/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/colinodell/omnipay-bundle/compare/0.1.0...0.2.0
